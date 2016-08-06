@@ -1,0 +1,13 @@
+{
+    "addr": ":80",
+    "database": "/var/lib/go-shorten/db.json",
+    "admin": {
+        "path": "/admin",
+        "username": "admin",
+        "password": "passw0rd"
+    },
+    "dns": {
+        "enable": true,
+        "addr": ":53"
+    }
+}
