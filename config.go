@@ -19,12 +19,35 @@ type Config struct {
 	} `json:"admin"`
 }
 
-// LoadConfig attempts to load the configuration from a JSON file.
+// WriteDefaultConfig writes the default configuration to a JSON file.
+func WriteDefaultConfig(name string) error {
+	c := &Config{
+		Addr:     ":8000",
+		Database: "db.json",
+		Admin: {
+			Path:     "/admin",
+			Username: "admin",
+			Password: "passw0rd",
+		},
+	}
+	w, err := os.Create(name)
+	if err != nil {
+		return err
+	}
+	defer w.Close()
+	if err := json.NewEncoder(w).Encode(c); err != nil {
+		return err
+	}
+	return nil
+}
+
+// Load attempts to read the configuration from a JSON file.
 func LoadConfig(name string) (*Config, error) {
 	r, err := os.Open(name)
 	if err != nil {
 		return nil, err
 	}
+	defer r.Close()
 	c := &Config{}
 	if err := json.NewDecoder(r).Decode(c); err != nil {
 		return nil, err
