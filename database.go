@@ -19,10 +19,10 @@ func LoadDatabase(name string) (*Database, error) {
 	}
 	defer r.Close()
 	d := &Database{}
-	if err := json.NewDecoder(r).Decode(c); err != nil {
+	if err := json.NewDecoder(r).Decode(d); err != nil {
 		return nil, err
 	}
-	return c, nil
+	return d, nil
 }
 
 // Save attempts to write the database to disk. This should only need to be
@@ -33,7 +33,7 @@ func (d *Database) Save(name string) error {
 		return err
 	}
 	defer w.Close()
-	if err := json.NewEncoder(w).Encode(v); err != nil {
+	if err := json.NewEncoder(w).Encode(d); err != nil {
 		return err
 	}
 	return nil
