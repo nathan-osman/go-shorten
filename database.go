@@ -7,28 +7,41 @@ import (
 
 // Database maintains a list of subdomains and paths to use for redirects.
 type Database struct {
+	name       string
 	Subdomains map[string]string `json:"subdomains"`
 	Paths      map[string]string `json:"paths"`
 }
 
-// LoadDatabase attempts to load the database from disk.
+// LoadDatabase attempts to load the database from disk. There is a rather
+// unavoidable race condition that occurs when checking if the database file
+// exists.
 func LoadDatabase(name string) (*Database, error) {
-	r, err := os.Open(name)
-	if err != nil {
-		return nil, err
+	d := &Database{
+		name:       name,
+		Subdomains: make(map[string]string),
+		Paths:      make(map[string]string),
 	}
-	defer r.Close()
-	d := &Database{}
-	if err := json.NewDecoder(r).Decode(d); err != nil {
-		return nil, err
+	if _, err := os.Stat(name); err != nil {
+		if !os.IsNotExist(err) {
+			return nil, err
+		}
+	} else {
+		r, err := os.Open(name)
+		if err != nil {
+			return nil, err
+		}
+		defer r.Close()
+		if err := json.NewDecoder(r).Decode(d); err != nil {
+			return nil, err
+		}
 	}
 	return d, nil
 }
 
 // Save attempts to write the database to disk. This should only need to be
 // called when the contents of the map are changed.
-func (d *Database) Save(name string) error {
-	w, err := os.Create(name)
+func (d *Database) Save() error {
+	w, err := os.Create(d.name)
 	if err != nil {
 		return err
 	}
