@@ -10,33 +10,25 @@ import (
 // is because then the authentication data would not necessarily be safe from
 // snooping.
 type Config struct {
-	Addr     string `json:"addr"`
-	Database string `json:"database"`
-	Admin    struct {
-		Path     string `json:"path"`
-		Username string `json:"username"`
-		Password string `json:"password"`
-	} `json:"admin"`
-	DNS struct {
-		Enable bool   `json:"enable"`
-		Addr   string `json:"addr"`
-	} `json:"dns"`
+	Addr          string `json:"addr"`
+	Database      string `json:"database"`
+	AdminPath     string `json:"admin_path"`
+	AdminUsername string `json:"admin_username"`
+	AdminPassword string `json:"admin_password"`
+	DNSEnable     bool   `json:"dns_enable"`
+	DNSAddr       string `json:"dns_addr"`
 }
 
 // WriteDefaultConfig writes the default configuration to a JSON file.
 func WriteDefaultConfig(name string) error {
 	c := &Config{
-		Addr:     ":80",
-		Database: "db.json",
-		Admin: {
-			Path:     "/admin",
-			Username: "admin",
-			Password: "passw0rd",
-		},
-		DNS: {
-			Enable: true,
-			Addr:   ":53",
-		},
+		Addr:          ":80",
+		Database:      "db.json",
+		AdminPath:     "/admin",
+		AdminUsername: "admin",
+		AdminPassword: "passw0rd",
+		DNSEnable:     true,
+		DNSAddr:       ":53",
 	}
 	w, err := os.Create(name)
 	if err != nil {
