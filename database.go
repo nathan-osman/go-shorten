@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"path"
 )
 
 // Database maintains a list of subdomains and paths to use for redirects.
@@ -41,6 +42,9 @@ func LoadDatabase(name string) (*Database, error) {
 // Save attempts to write the database to disk. This should only need to be
 // called when the contents of the map are changed.
 func (d *Database) Save() error {
+	if err := os.MkdirAll(path.Dir(d.name), 0775); err != nil {
+		return err
+	}
 	w, err := os.Create(d.name)
 	if err != nil {
 		return err
