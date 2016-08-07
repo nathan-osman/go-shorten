@@ -23,8 +23,15 @@ type message struct {
 	Body string
 }
 
-// adminHandler processes requests for the admin page.
+// adminHandler processes requests for the admin page. Access is restricted by
+// HTTP basic auth.
 func (s *Server) adminHandler(w http.ResponseWriter, r *http.Request) {
+	username, password, ok := r.BasicAuth()
+	if !ok || username != s.config.AdminUsername || password != s.config.AdminPassword {
+		w.Header().Set("WWW-Authenticate", "Basic realm=go-shorten")
+		http.Error(w, http.StatusText(http.StatusUnauthorized), http.StatusUnauthorized)
+		return
+	}
 	messages := make([]message, 0)
 	defer func() {
 		s.template.Execute(w, map[string]interface{}{
@@ -79,7 +86,9 @@ func NewServer(cfg *Config, db *Database) (*Server, error) {
 			template: template.New("admin"),
 		}
 	)
-	r.HandleFunc(cfg.AdminPath, s.adminHandler)
+	if len(cfg.AdminPassword) != 0 {
+		r.HandleFunc(cfg.AdminPath, s.adminHandler)
+	}
 	r.NotFoundHandler = s
 	s.server.Handler = r
 	if _, err := s.template.Parse(adminTemplate); err != nil {
