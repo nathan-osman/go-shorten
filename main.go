@@ -9,27 +9,49 @@ import (
 
 func main() {
 
-	// Initialize the database
-	db, err := NewDatabase(*dbFilename)
+	// Ensure no more than one argument was supplied
+	if len(os.Args) > 2 {
+		log.Fatalf("Usage: %s CONFIG", os.Args[0])
+	}
+
+	// If no arguments were supplied, write the default configuration
+	if len(os.Args) < 2 {
+		log.Print("No configuration file specified, creating one...")
+		if err := WriteDefaultConfig("config.json"); err != nil {
+			log.Fatal(err)
+		} else {
+			log.Print("Remember to change the admin password")
+			return
+		}
+	}
+
+	// Attempt to load the file specified as the single argument
+	c, err := LoadConfig(os.Args[1])
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Print("Configuration loaded")
+
+	// Load the database using the filename in the config file.
+	d, err := LoadDatabase(c.Database)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Print("Database initialized")
 
 	// Initialize the HTTP server
-	srv, err := NewServer(*addr)
+	s, err := NewServer(c, d)
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("Server listening on %s", *addr)
+	log.Printf("Listening for requests on %s...", c.Addr)
 
 	// Wait for SIGINT
-	c := make(chan os.Signal)
-	signal.Notify(c, syscall.SIGINT)
-	<-c
+	ch := make(chan os.Signal)
+	signal.Notify(ch, syscall.SIGINT)
+	<-ch
 
-	// Stop the server
+	// Shut down the server
 	log.Print("Shutting down...")
-	srv.Stop()
-	log.Print("Server stopped")
+	s.Stop()
 }
