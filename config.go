@@ -15,8 +15,6 @@ type Config struct {
 	AdminPath     string `json:"admin_path"`
 	AdminUsername string `json:"admin_username"`
 	AdminPassword string `json:"admin_password"`
-	DNSEnable     bool   `json:"dns_enable"`
-	DNSAddr       string `json:"dns_addr"`
 }
 
 // WriteDefaultConfig writes the default configuration to a JSON file.
@@ -27,8 +25,6 @@ func WriteDefaultConfig(name string) error {
 		AdminPath:     "/admin",
 		AdminUsername: "admin",
 		AdminPassword: "passw0rd",
-		DNSEnable:     true,
-		DNSAddr:       ":53",
 	}
 	w, err := os.Create(name)
 	if err != nil {

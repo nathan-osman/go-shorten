@@ -8,9 +8,8 @@ import (
 
 // Database maintains a list of subdomains and paths to use for redirects.
 type Database struct {
-	name       string
-	Subdomains map[string]string `json:"subdomains"`
-	Paths      map[string]string `json:"paths"`
+	name  string
+	Paths map[string]string `json:"paths"`
 }
 
 // LoadDatabase attempts to load the database from disk. There is a rather
@@ -18,9 +17,8 @@ type Database struct {
 // exists.
 func LoadDatabase(name string) (*Database, error) {
 	d := &Database{
-		name:       name,
-		Subdomains: make(map[string]string),
-		Paths:      make(map[string]string),
+		name:  name,
+		Paths: make(map[string]string),
 	}
 	if _, err := os.Stat(name); err != nil {
 		if !os.IsNotExist(err) {
