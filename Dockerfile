@@ -2,7 +2,7 @@ FROM golang:latest
 MAINTAINER Nathan Osman <nathan@quickmediasolutions.com>
 
 # Add the source files
-ADD *.go /go/src/github.com/nathan-osman/go-shorten
+ADD *.go /go/src/github.com/nathan-osman/go-shorten/
 
 # Fetch dependencies
 RUN go get ./...
