@@ -34,7 +34,7 @@ const adminTemplate = `
                 <div class="message {{ $m.Type }}">{{ $m.Body }}</div>
             {{ end }}
             <h1>go-shorten</h1>
-            <p>The redirects are displayed in two tables below.</p>
+            <p>The redirects are displayed in the table below.</p>
             <table>
                 <tr>
                     <th>Path</th>
