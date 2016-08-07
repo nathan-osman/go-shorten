@@ -37,7 +37,12 @@ func NewServer(cfg *Config, db *Database) (*Server, error) {
 
 // ServeHTTP processes requests for redirects.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	//...
+	dest, ok := s.database.Paths[r.URL.Path]
+	if ok {
+		http.Redirect(w, r, dest, http.StatusFound)
+	} else {
+		http.NotFound(w, r)
+	}
 }
 
 // Stop shuts down the HTTP server.
