@@ -13,8 +13,7 @@ RUN go install github.com/nathan-osman/go-shorten
 # Add the configuration file
 ADD config.json /etc/go-shorten/config.json
 
-# Expose the DNS and HTTP ports
-EXPOSE 53
+# Expose the HTTP port
 EXPOSE 80
 
 # Specify the command to run

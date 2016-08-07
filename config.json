@@ -3,7 +3,5 @@
     "database": "/var/lib/go-shorten/db.json",
     "admin_path": "/admin",
     "admin_username": "admin",
-    "admin_password": "passw0rd",
-    "dns_enable": true,
-    "dns_addr": ":53"
+    "admin_password": "passw0rd"
 }
