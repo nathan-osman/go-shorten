@@ -1,20 +1,17 @@
-FROM golang:latest
+FROM alpine
 MAINTAINER Nathan Osman <nathan@quickmediasolutions.com>
 
-# Add the source files
-ADD *.go /go/src/github.com/nathan-osman/go-shorten/
+# Add the binary
+ADD dist/go-shorten /usr/local/bin/
 
-# Fetch dependencies
-RUN go get ./...
-
-# Build the application
-RUN go install github.com/nathan-osman/go-shorten
-
-# Add the configuration file
-ADD config.json /etc/go-shorten/config.json
+# Create the default configuration file
+RUN \
+    mkdir -p /etc/go-shorten && \
+    cd /etc/go-shorten && \
+    go-shorten
 
 # Expose the HTTP port
 EXPOSE 80
 
-# Specify the command to run
-CMD go-shorten /etc/go-shorten/config.json
+# Specify the entrypoint
+ENTRYPOINT ["/usr/local/bin/go-shorten", "/etc/go-shorten/config.json"]
