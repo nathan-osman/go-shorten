@@ -1,4 +1,4 @@
-package main
+package shorten
 
 // Template for the admin page.
 const adminTemplate = `

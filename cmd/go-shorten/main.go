@@ -5,6 +5,8 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/nathan-osman/go-shorten"
 )
 
 func main() {
@@ -17,7 +19,7 @@ func main() {
 	// If no arguments were supplied, write the default configuration
 	if len(os.Args) < 2 {
 		log.Print("No configuration file specified, creating one...")
-		if err := WriteDefaultConfig("config.json"); err != nil {
+		if err := shorten.WriteDefaultConfig("config.json"); err != nil {
 			log.Fatal(err)
 		} else {
 			log.Print("Remember to change the admin password")
@@ -26,21 +28,21 @@ func main() {
 	}
 
 	// Attempt to load the file specified as the single argument
-	c, err := LoadConfig(os.Args[1])
+	c, err := shorten.LoadConfig(os.Args[1])
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Print("Configuration loaded")
 
 	// Load the database using the filename in the config file.
-	d, err := LoadDatabase(c.Database)
+	d, err := shorten.LoadDatabase(c.Database)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Print("Database initialized")
 
 	// Initialize the HTTP server
-	s, err := NewServer(c, d)
+	s, err := shorten.NewServer(c, d)
 	if err != nil {
 		log.Fatal(err)
 	}
